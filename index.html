@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>levity</title>
+    <link rel="icon" type="image/jpg" href="https://png-1.vector.me/files/images/3/9/398540/aiga_departures_bg_preview"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="indexCss.css">
+    
+
+    
+</head>
+<body>
+    
+    
+    
+<div id="Video">
+    
+    <video autoplay loop muted>
+        <source src="video/avioneta.mp4" type="video/mp4">
+        Tu navegador no admite la etiqueta de video.
+      </video>
+      <div class="overlay"></div>
+
+    <div id="logo"> 
+        <img id="logosvg" src="logos/svg2.svg">
+    </div>
+    <div id="botons">
+    <div class="botones" onclick="menu()"> NUEVA PARTIDA</div>
+    <div class="botones" onclick="ajustes()"> AJUSTES</div>
+    <div class="botones" onclick="cerrarVentana()"> SALIR</div>
+    </div>
+
+</div>
+<script>
+    
+    function menu() {
+        window.location.href = "menu.html";
+    }
+
+    function ajustes() {
+        window.location.href = "ajustes.html";
+    }
+
+    function cerrarVentana() {
+      window.close();
+    }
+    </script>
+</body>
+</html>

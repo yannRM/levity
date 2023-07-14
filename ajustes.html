@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>AJUSTES</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="ajustescss.css">
+    <link rel="icon" type="image/jpg" href="https://png-1.vector.me/files/images/3/9/398540/aiga_departures_bg_preview"/>
+    <script>
+        function toggleFullScreen() {
+           if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+              exitFullScreen();
+           } else {
+              enterFullScreen();
+           }
+        }
+  
+        function enterFullScreen() {
+           var element = document.documentElement;
+           if (element.requestFullscreen) {
+              element.requestFullscreen();
+           } else if (element.webkitRequestFullscreen) {
+              element.webkitRequestFullscreen();
+           } else if (element.mozRequestFullScreen) {
+              element.mozRequestFullScreen();
+           } else if (element.msRequestFullscreen) {
+              element.msRequestFullscreen();
+           }
+        }
+  
+        function exitFullScreen() {
+           if (document.exitFullscreen) {
+              document.exitFullscreen();
+           } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+           } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+           } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+           }
+        }
+
+        function atras() {
+            window.location.href = "index.html";
+        }
+     </script>
+</head>
+<body>
+    
+    <div id="cajaBotones">
+        
+        <div id="boton">
+           <div class="panta" onclick="toggleFullScreen()">PANTALLA COMPLETA</div>
+           <div class="panta" onclick="atras()">ATRAS</div>
+        </div>
+
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/jpg" href="https://png-1.vector.me/files/images/3/9/398540/aiga_departures_bg_preview"/>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Levity</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #contenedor {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#texto {
+  
+  position: absolute;
+  
+  top: 50px;
+  left: 50px;
+  font-size: 24px;
+  font-family: sans-serif;
+  color: rgb(255, 255, 255);
+  
+  width: 500px;
+  height: 87%;
+  padding-top: 10px;
+  padding-left: 10px;
+  align-items: center;
+  align-content: center;
+  padding: 10px;
+}
+
+#rojo {
+  background-color: rgb(255, 0, 0);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+#amarillo {
+  background-color: rgba(255, 239, 12, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+#verde {
+  background-color: rgba(12, 255, 85, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+#rosa {
+  background-color: rgba(255, 12, 162, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+#morado {
+  background-color: rgba(214, 12, 255, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+
+#naranja {
+  background-color: rgba(255, 81, 12, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  
+  
+
+
+
+}
+
+#siguiente {
+  background-color: rgba(255, 255, 255, 0.904);
+  width: 50%;
+  height: 40px;
+  border: none;
+  color: black;
+
+  font-size: 20px;
+  
+
+
+
+}
+</style>
+ </head>
+  <body>
+
+  <div id="contenedor">
+
+    
+
+    <div id="texto">
+      <p>ELIGE EL COLOR DE LA <br>AVIONETA</p>
+      <p>¡Puedes rotar la avioneta usando las flechas!</p><br>
+      <div id="botones">
+        
+        
+        <button id="rojo" data-color="#E12419"></button><br><br>
+        <button id="amarillo" data-color="#D5C11C"></button><br><br>
+        <button id="verde" data-color="#44EB4F"></button><br><br>
+        <button id="rosa" data-color="#EB44C6"></button><br><br>
+        <button id="morado" data-color="#A75DFF"></button><br><br>
+        <button id="naranja" data-color="#FC6801"></button><br><br><br>
+        <button id="siguiente" onclick="enviarcolor()">ELEGIR</button><br><br>
+        </div>
+      
+      
+      
+      </div>
+    <!-- Canvas where the render shows -->
+    <canvas id="myCanvas"></canvas>
+
+    <!-- Aquí va todo el código de three.js -->
+    <script type="module">
+
+var boton1 = document.getElementById("rojo");
+var boton2 = document.getElementById("amarillo");
+var boton3 = document.getElementById("verde");
+var boton4 = document.getElementById("rosa");
+var boton5 = document.getElementById("morado");
+var boton7 = document.getElementById("naranja");
+var boton6 = document.getElementById("siguiente");
+
+var colordeavioneta01 = 0xE1AF2C;
+var colordeavioneta02 = 0xE1AF2C;
+
+
+
+boton1.addEventListener("click", function() {
+
+  colordeavioneta02 = boton1.getAttribute("data-color");
+  material.color.set(colordeavioneta02);
+	
+  });
+
+      
+  boton2.addEventListener("click", function() {
+
+colordeavioneta02 = boton2.getAttribute("data-color");
+material.color.set(colordeavioneta02);
+
+});
+
+boton3.addEventListener("click", function() {
+
+colordeavioneta02 = boton3.getAttribute("data-color");
+material.color.set(colordeavioneta02);
+
+});
+
+boton4.addEventListener("click", function() {
+
+colordeavioneta02 = boton4.getAttribute("data-color");
+material.color.set(colordeavioneta02);
+
+});
+boton5.addEventListener("click", function() {
+
+colordeavioneta02 = boton5.getAttribute("data-color");
+material.color.set(colordeavioneta02);
+
+});
+
+boton7.addEventListener("click", function() {
+
+colordeavioneta02 = boton7.getAttribute("data-color");
+material.color.set(colordeavioneta02);
+
+});
+      
+
+
+
+      // 📚  Librerías importadas para hacer funcionar three.js y el OrbitControls
+      import * as THREE from './js/three.module.js';
+      import { OrbitControls } from './js/OrbitControls.js';
+      import { TWEEN } from './js/tween.module.min.js';
+
+      // ⚙️ Renderer
+      var renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById('myCanvas'),
+        antialias: true,
+      });
+      renderer.setPixelRatio(window.decivePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // 🎬 Creando nueva escena
+      var scene = new THREE.Scene();
+      
+      
+      
+      
+      // 📷 Creando nueva cámara de perspectiva
+      var camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        50
+      );
+
+
+      
+      scene.add(camera);
+
+
+      // 💻 Evento para redimensionar el 'canvas'//------------------------------------------
+  // 📐 Sizes: Objeto donde se toman los tamaños interiores 'inner' de la ventana.
+  const sizes = {                     
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+
+ // 🖼 Tomando el 'canvas' mediante el id 'myCanvas' de nuestro HTML para cambiar sus dimensiones
+  const canvas = document.getElementById('myCanvas');
+
+ // 🎉 Evento que se ejecutará al redimensionar 'resize' nuestra ventana
+  window.addEventListener('resize', () => {
+    // Actualizando los valores del objeto 'sizes' con las medidas internas de la ventana
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+
+    // Actualización de los valores en la cámara como la relación-aspecto y la matriz de proyección.
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+
+    // Aplicando al render el nuevo tamaño del 'viewport'
+    renderer.setSize(sizes.width, sizes.height);
+  });
+
+      // 🎮 Añadiendo los OrbitControls
+      var controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+
+
+      
+      // 🛩️🛩️🛩️🛩️ Avioneta 🛩️🛩️🛩️🛩️
+
+      // Elementos
+      const geometry = new THREE.SphereGeometry(1, 32, 16);
+      const material = new THREE.MeshLambertMaterial({ color: colordeavioneta01});
+      
+      const fuselaje = new THREE.Mesh(geometry, material);
+      
+      fuselaje.material.color.set(colordeavioneta02);
+
+      fuselaje.scale.x = 2;
+
+
+
+  
+      
+        boton6.addEventListener("click", function() {
+          localStorage.setItem("color", colordeavioneta02);
+          
+          
+          
+          window.location.href='avioneta RMY.html';
+          
+
+		});
+      
+      const materialalas = new THREE.MeshLambertMaterial({ color: 0x302F2E});
+      const alas = new THREE.Mesh(geometry, materialalas);
+      alas.scale.y = 0.3;
+      alas.scale.z = 4;
+      alas.position.y = -0.01;
+      alas.position.x = 0.4;
+      
+
+
+      
+      const estabilizador_vertical = new THREE.Mesh(geometry, material);
+      estabilizador_vertical.scale.x = 0.5;
+      estabilizador_vertical.scale.y = 0.8;
+      estabilizador_vertical.scale.z = 0.2;
+      estabilizador_vertical.position.x = -1.3;
+      estabilizador_vertical.position.y = 1;
+      
+
+      const estabilizador_horizontal = new THREE.Mesh(geometry, materialalas);
+      estabilizador_horizontal.scale.x = 0.4;
+      estabilizador_horizontal.scale.y = 0.8;
+      estabilizador_horizontal.scale.z = 0.1;
+      estabilizador_horizontal.rotation.x = Math.PI * 0.5;
+      estabilizador_horizontal.rotation.y = Math.PI * 1;
+      estabilizador_horizontal.position.y = 1.5;
+      estabilizador_horizontal.position.x = -1.3;
+      
+
+      
+      const helice1 = new THREE.Mesh(geometry, materialalas);
+      helice1.position.x = 2;
+      helice1.scale.x = 0.1;
+      helice1.scale.y = 0.8;
+      helice1.scale.z = 0.2;
+      
+
+      const helice2 = helice1.clone();
+      helice2.position.x = 2;
+      helice2.rotation.x = Math.PI * 0.5;
+      
+
+      const luz = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco01 = new THREE.Mesh(luz, materialDeFoco);
+       
+       foco01.position.x = 1;
+       foco01.position.z = 1.7;
+       foco01.position.y = -.3;
+       foco01.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+
+
+
+      const luz2 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco2 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco02 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco02.position.x = 1;
+       foco02.position.z = 2.7;
+       foco02.position.y = -.3;
+       foco02.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+      
+      const luz3 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco3 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco03 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco03.position.x = 1;
+       foco03.position.z = -2.7;
+       foco03.position.y = -.3;
+       foco03.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+
+      const luz4 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco4 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco04 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco04.position.x = 1;
+       foco04.position.z = -1.7;
+       foco04.position.y = -.3;
+       foco04.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+      
+      var luzfoco01 = new THREE.PointLight(0xFFFFFF, 2, 70);
+      luzfoco01.position.x = 1;
+      luzfoco01.position.z = 1.7;
+      luzfoco01.position.y = -1;
+
+      var luzfoco02 = new THREE.PointLight(0xFFFFFF, 2, 70);
+      luzfoco02.position.x = 1;
+      luzfoco02.position.z = -1.7;
+      luzfoco02.position.y = -1;
+
+      var luzfoco03 = new THREE.PointLight(0xFFFFFF, 2, 70);
+      luzfoco03.position.x = 1;
+      luzfoco03.position.z = -2.7;
+      luzfoco03.position.y = -1;
+
+      var luzfoco04 = new THREE.PointLight(0xFFFFFF, 2, 70);
+      luzfoco04.position.x = 1;
+      luzfoco04.position.z = 2.7;
+      luzfoco04.position.y = -1;
+
+    
+
+      var focosgrup = new THREE.Group();
+      focosgrup.add(
+        foco01, foco02, foco03, foco04, luzfoco01, luzfoco02, luzfoco03
+      );
+      
+
+      
+      
+
+
+      var focosgrup01 = new THREE.Group();
+      focosgrup.add(
+        focosgrup
+      );
+      
+
+
+      
+
+
+      var helice = new THREE.Group();
+      helice.add(
+      helice1,helice2
+      );
+
+      var toda_la_avioneta = new THREE.Group();
+      toda_la_avioneta.add(
+      fuselaje,alas,estabilizador_horizontal,estabilizador_vertical,helice, focosgrup
+      );
+
+      scene.add(toda_la_avioneta);
+
+
+
+      //🔦 Luces
+      var light01 = new THREE.PointLight(0xffffff, 1);
+      light01.position.set(-10, 10, 5);
+      scene.add(light01);
+
+      var light02 = new THREE.PointLight(0xffffff, 1);
+      light02.position.set(100, -10, 30);
+      scene.add(light02);
+
+      //Settings de la cámara
+      camera.position.set(0, 0, 0);
+
+      var reloj = new THREE.Clock();
+      
+      var velocidad = - 6;
+      var amplitud = 0.3; 
+     
+      
+
+
+
+      function luzfocos (){
+    
+        luzfoco01.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco02.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco03.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco04.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        
+        materialDeFoco.opacity = ((Math.cos(reloj.getElapsedTime()*velocidad)*.5)+.5);
+        materialDeFoco2.opacity = ((Math.cos(reloj.getElapsedTime()*velocidad)*.5)+.5);
+        
+
+
+
+    }
+      
+  
+    function ondulacion (){
+      
+      toda_la_avioneta.position.y = toda_la_avioneta.position.y + Math.sin(reloj.getElapsedTime() * velocidad)*amplitud;
+
+
+    }
+
+
+
+
+
+        
+
+
+
+// Objeto de posiciones
+var posiciones_originales = {
+  posicion_en_x: -4,
+  posicion_en_y: 0,
+  posicion_en_z: 0,
+  rotacion_en_x: 0, // 👈 Nuevas propiedades para rotar el objeto.
+  rotacion_en_z: 0,
+  rotacion_en_y: 0, // 👈 
+ };
+
+var nuevas_posiciones = {
+  posicion_en_x: 3,
+  posicion_en_y: 2,
+  posicion_en_z: 0,
+  rotacion_en_x : 0,
+  rotacion_en_z: 0,
+  rotacion_en_y: 0,
+  
+};
+
+
+      // Objeto Tween ✨
+       var tween = new TWEEN.Tween(posiciones_originales);
+       tween.easing(TWEEN.Easing.Quadratic.Out);
+        var tween_rotation = new TWEEN.Tween(posiciones_originales); //👈 Nuevo objeto 'tween'
+
+      function magiatween (){
+        tween.to(nuevas_posiciones, 2000);
+  tween.start();
+  
+
+      }
+
+
+    
+
+      camera.position.set(4, 2, 0);
+      
+
+
+   // 🎮🎮🎮 Interacción  🎮🎮🎮
+  
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowLeft') {
+     
+      tween_rotation.to({ rotacion_en_y: Math.PI * (-3 / 14) }, 200); // 👈 Personaliza
+    
+    tween_rotation.start();
+     
+    
+    }else  if (event.key === 'ArrowRight') {
+     
+      tween_rotation.to({ rotacion_en_y: Math.PI * (3 / 16) }, 200); // 👈 Personaliza
+    
+    tween_rotation.start();
+      
+    } else if (event.key === 'Backspace') {
+      
+      tween_rotation.to({ rotacion_en_x: Math.PI * (4 / 2) }, 200); // 👈 Personaliza
+    tween_rotation.repeat(0);
+    tween_rotation.easing(TWEEN.Easing.Quadratic.InOut); // 👈 Personaliza
+    tween_rotation.yoyo(true); 
+    tween_rotation.start();
+     
+    
+    } 
+  });
+
+
+
+ 
+
+      //🔥🔥🔥🔥🔥Rendering y animación🔥🔥🔥🔥🔥
+      requestAnimationFrame(render);
+      function render() {
+        //💃 Animación
+        helice.rotation.x += 200;
+        
+        
+        luzfocos ();
+        TWEEN.update();
+        
+        toda_la_avioneta.position.y = posiciones_originales.posicion_en_y;
+        toda_la_avioneta.position.x = posiciones_originales.posicion_en_x;
+         toda_la_avioneta.position.z = posiciones_originales.posicion_en_z;
+
+          //💃 Animación
+  toda_la_avioneta.rotation.z = posiciones_originales.rotacion_en_z; // 👈 
+  toda_la_avioneta.rotation.x = posiciones_originales.rotacion_en_x; // 👈 
+  toda_la_avioneta.rotation.y = posiciones_originales.rotacion_en_y; // 👈 
+        
+        
+        
+        ondulacion ();
+        
+        
+        
+        
+        //Actualización del OrbitControls para generar la suavidad de movimiento
+        controls.update();
+
+        //Llamado para renderizar y volver a llamar a la misma función (render)
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+        requestAnimationFrame(ondulacion);
+      }
+    </script>
+    
+    </div>
+  </body>
+</html>

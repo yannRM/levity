@@ -1,0 +1,48 @@
+*{
+margin: 0px;
+padding: 0px;
+}
+
+#cajabotones {
+
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#boton{
+
+    width: 100%;
+    height: 500px;
+    
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.panta {
+text-align: center;
+    color: white;
+width: 400px;
+padding-top: 10px;
+height: 30px;
+background-color: black;
+margin-top: 20px;
+font-family: 'Roboto', sans-serif;
+font-size: 20px;
+
+}
+
+.panta:hover {
+
+    background-color: white;
+    color: black;
+
+}

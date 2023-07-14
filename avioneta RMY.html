@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpg" href="https://png-1.vector.me/files/images/3/9/398540/aiga_departures_bg_preview"/>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>levity - CARRERA </title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      #myCanvas {
+  position: fixed; 
+  
+  top: 0;
+   left: 0;
+  z-index: -1;
+  width: 100%; 
+  height: 100%;
+}
+      
+#interfaz {
+  font-family: 'Konkhmer Sleokchher', cursive;
+  background-color: black;
+  color: white;
+  font-size: 26px;
+  position: fixed; 
+  top: 0; 
+  left: 0;
+  z-index: 1; 
+  width: 100%;
+  height: 50px;
+  background-color: transparent; 
+  margin-top: 1%;
+  margin-left: 1%;
+  /* otros estilos para la barra de navegación */
+}
+
+#cajavida{
+
+width: 30%;
+height: 20%;
+float: right;
+position: fixed¿; 
+margin-right: 1%;
+  margin-top: 1%;
+  top: 0;
+   left: 0;
+  z-index: 1;
+
+  float: right;
+}
+
+#txtvida{
+
+width: 30%;
+height: 20%;
+font-family: 'Konkhmer Sleokchher', cursive;
+
+color: white;
+font-size: 40px;
+
+
+}
+#vidayt{
+
+margin-top: 0;
+float: none;
+
+
+
+}
+#vida{
+
+width: 400px;
+height: 50px;
+background-color: rgb(253, 51, 0);
+
+
+
+}
+#aviso_piso{
+font-size: 100px;
+margin: auto;
+padding: auto;
+color: red;
+
+}
+    </style>
+  </head>
+  <body>
+    <audio id="miCancion" src="musica/Tmusic2.mp3"></audio>
+    <audio id="salto" src="musica/salto.mp3"></audio>
+    <audio id="pasar" src="musica/pasar.mp3"></audio>
+
+    <!-- Canvas where the render shows -->
+    <canvas id="myCanvas"></canvas>
+
+    <!-- Interfaz -->
+  
+  <div id="interfaz">
+    <div id="miDivdis">Distancia en x: <span id="distanciaX" style="opacity: 1;" str></span></div>
+    <div id="miDivalt">Altura: <span id="altura" style="opacity: 1;"></span></div>
+    
+    <div id="miDiv" > <span id="aviso_izq"></span></div>
+    <div id="miDiv"> <span id="aviso_der"></span></div>
+    <div id="miDiv" style=" width: 50%; margin: auto;"> <span id="aviso_piso"></span><br><button id="botonReiniciar" 
+      style="width: 400px; height: 60px; 
+      background-color: black; 
+      color: white;
+      border: none;
+      font-size: 30px;
+      font-family: 'Konkhmer Sleokchher', cursive;
+      margin: auto;
+      opacity: 0;
+      " onclick="location.reload()">REINICIAR</button></div>
+      
+    
+    
+  </div>
+  <div id="cajavida" style="opacity: 1;">
+
+  <div id="txtvida">
+<p id="vidayt">GASOLINA</p>
+  </div>
+  <div id="vida">
+    
+    <div id = "vida_al_cien" style = " background-color: #10EF0B; width: 400px; height: 100%;";>
+      
+    </div>
+
+  </div>
+
+
+  </div>
+
+  <footer id="cajaTeclas" 
+  style=" 
+  width: 100%; 
+  height: 400px; 
+  
+  float: left; 
+  margin-top: 20%; 
+  color: aliceblue;
+  font-family: 'Konkhmer Sleokchher', cursive;
+  font-size: 20px;
+  opacity: 1;
+  
+  ">
+  <div style="
+  height: 400px;
+  width: 400px;
+  padding: 0px;
+  padding-left: 60px;
+  padding-top: 20px;
+  margin: opx;
+  margin-left: 30px;
+  background-color: black;
+  opacity: 0.8;
+
+  ">
+  <p>¡Teclas para jugar!</p>
+  <p>Subir: tecla up</p>
+  <p>Izquierda: tecla left</p>
+  <p>Derecha: tecla right</p>
+  <p>Enter: ajustar rotación</p>
+  <p>P : activar/desactivar musica</p>
+  </div>
+  </footer>
+
+    <!-- Aquí va todo el código de three.js -->
+    <script type="module">
+
+
+    var color = localStorage.getItem("color");
+
+
+      // 📚  Librerías importadas para hacer funcionar three.js y el OrbitControls
+      import * as THREE from './js/three.module.js';
+      import { OrbitControls } from './js/OrbitControls.js';
+      import { TWEEN } from './js/tween.module.min.js';
+
+      // ⚙️ Renderer
+      var renderer = new THREE.WebGLRenderer({
+        canvas: document.getElementById('myCanvas'),
+        antialias: true,
+      });
+      renderer.setPixelRatio(window.decivePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // 🎬 Creando nueva escena
+      var scene = new THREE.Scene();
+      
+      var loader = new THREE.TextureLoader(); 
+loader.load('imagenes/cielo nocturno.jpg', function (texture) { // 👈 Reemplaza la ruta por la ruta y nombre de tu textura
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.environment = texture;
+  scene.background = texture;
+  scene.background = texture;
+});
+      
+      
+var gris_claro = new THREE.Color(0xededed); //🎨 Crea una variable de color
+  scene.background = gris_claro ;
+
+  // ☁ Añadiendo Niebla a la escena
+  var fogColor = gris_claro ; // Color de la niebla
+  var fogNear = 50; // Distancia desde la cámara donde comienza la niebla
+  var fogFar = 50; // Distancia desde la cámara donde termina la niebla
+  var fog = new THREE.Fog(fogColor, fogNear, fogFar); //☁ Crea un objeto de niebla
+  
+  scene.fog = fog;
+
+
+
+      // 📷 Creando nueva cámara de perspectiva
+      var camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        500
+      );
+
+
+      
+      scene.add(camera);
+
+
+      // 💻 Evento para redimensionar el 'canvas'//------------------------------------------
+  // 📐 Sizes: Objeto donde se toman los tamaños interiores 'inner' de la ventana.
+  const sizes = {                     
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+
+ // 🖼 Tomando el 'canvas' mediante el id 'myCanvas' de nuestro HTML para cambiar sus dimensiones
+  const canvas = document.getElementById('myCanvas');
+
+ // 🎉 Evento que se ejecutará al redimensionar 'resize' nuestra ventana
+  window.addEventListener('resize', () => {
+    // Actualizando los valores del objeto 'sizes' con las medidas internas de la ventana
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+
+    // Actualización de los valores en la cámara como la relación-aspecto y la matriz de proyección.
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+
+    // Aplicando al render el nuevo tamaño del 'viewport'
+    renderer.setSize(sizes.width, sizes.height);
+  });
+
+  /*
+      // 🎮 Añadiendo los OrbitControls
+      var controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+*/
+
+      // Añadiendo GridHelper
+      /*
+      const size = 10;
+      const divisions = 10;
+      const gridHelper = new THREE.GridHelper(size, divisions);
+      scene.add(gridHelper); //Si lo quitas explota todo
+      */
+      // 🛩️🛩️🛩️🛩️ Avioneta 🛩️🛩️🛩️🛩️
+
+      // Elementos
+      const geometry = new THREE.SphereGeometry(1, 32, 16);
+      const material = new THREE.MeshLambertMaterial({ color: color});
+      const fuselaje = new THREE.Mesh(geometry, material);
+      fuselaje.scale.x = 2;
+      
+      
+      const materialalas = new THREE.MeshLambertMaterial({ color: 0x302F2E});
+      const alas = new THREE.Mesh(geometry, materialalas);
+      alas.scale.y = 0.3;
+      alas.scale.z = 4;
+      alas.position.y = -0.01;
+      alas.position.x = 0.4;
+      
+
+
+      
+      const estabilizador_vertical = new THREE.Mesh(geometry, material);
+      estabilizador_vertical.scale.x = 0.5;
+      estabilizador_vertical.scale.y = 0.8;
+      estabilizador_vertical.scale.z = 0.2;
+      estabilizador_vertical.position.x = -1.3;
+      estabilizador_vertical.position.y = 1;
+      
+
+      const estabilizador_horizontal = new THREE.Mesh(geometry, materialalas);
+      estabilizador_horizontal.scale.x = 0.4;
+      estabilizador_horizontal.scale.y = 0.8;
+      estabilizador_horizontal.scale.z = 0.1;
+      estabilizador_horizontal.rotation.x = Math.PI * 0.5;
+      estabilizador_horizontal.rotation.y = Math.PI * 1;
+      estabilizador_horizontal.position.y = 1.5;
+      estabilizador_horizontal.position.x = -1.3;
+      
+
+      
+      const helice1 = new THREE.Mesh(geometry, materialalas);
+      helice1.position.x = 2;
+      helice1.scale.x = 0.1;
+      helice1.scale.y = 0.8;
+      helice1.scale.z = 0.2;
+      
+
+      const helice2 = helice1.clone();
+      helice2.position.x = 2;
+      helice2.rotation.x = Math.PI * 0.5;
+      
+
+      const luz = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco01 = new THREE.Mesh(luz, materialDeFoco);
+       
+       foco01.position.x = 1;
+       foco01.position.z = 1.7;
+       foco01.position.y = -.3;
+       foco01.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+
+
+
+      const luz2 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco2 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco02 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco02.position.x = 1;
+       foco02.position.z = 2.7;
+       foco02.position.y = -.3;
+       foco02.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+      
+      const luz3 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco3 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco03 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco03.position.x = 1;
+       foco03.position.z = -2.7;
+       foco03.position.y = -.3;
+       foco03.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+
+      const luz4 = new THREE.SphereGeometry(.15, 32, 32);
+      const materialDeFoco4 = new THREE.MeshBasicMaterial({ color: 0xFFFFFF, transparent : true});
+      const foco04 = new THREE.Mesh(luz2, materialDeFoco2);
+       
+       foco04.position.x = 1;
+       foco04.position.z = -1.7;
+       foco04.position.y = -.3;
+       foco04.scale.x = 1.4;
+
+      materialDeFoco.opacity = 1;
+      
+      var luzfoco01 = new THREE.PointLight(0xFFFFFF, 2, 10);
+      luzfoco01.position.x = 1;
+      luzfoco01.position.z = 1.7;
+      luzfoco01.position.y = -1;
+
+      var luzfoco02 = new THREE.PointLight(0xFFFFFF, 2, 10);
+      luzfoco02.position.x = 1;
+      luzfoco02.position.z = -1.7;
+      luzfoco02.position.y = -1;
+
+      var luzfoco03 = new THREE.PointLight(0xFFFFFF, 2, 10);
+      luzfoco03.position.x = 1;
+      luzfoco03.position.z = -2.7;
+      luzfoco03.position.y = -1;
+
+      var luzfoco04 = new THREE.PointLight(0xFFFFFF, 2, 10);
+      luzfoco04.position.x = 1;
+      luzfoco04.position.z = 2.7;
+      luzfoco04.position.y = -1;
+
+    
+
+      var focosgrup = new THREE.Group();
+      focosgrup.add(
+        foco01, foco02, foco03, foco04, luzfoco01, luzfoco02, luzfoco03
+      );
+      
+
+      
+      
+
+
+      var focosgrup01 = new THREE.Group();
+      focosgrup.add(
+        focosgrup
+      );
+      
+
+
+      
+
+
+      var helice = new THREE.Group();
+      helice.add(
+      helice1,helice2
+      );
+
+      var toda_la_avioneta = new THREE.Group();
+      toda_la_avioneta.add(
+      fuselaje,alas,estabilizador_horizontal,estabilizador_vertical,helice, focosgrup
+      );
+
+      scene.add(toda_la_avioneta);
+
+
+
+      //🔦 Luces
+      var light01 = new THREE.PointLight(0xffffff, 1);
+      light01.position.set(-10, 10, 5);
+      scene.add(light01);
+
+      var light02 = new THREE.PointLight(0xffffff, 1);
+      light02.position.set(100, -10, 30);
+      scene.add(light02);
+
+      //Settings de la cámara
+      camera.position.set(0, 0, 10);
+
+      var reloj = new THREE.Clock();
+      
+      var velocidad = - 6;
+      var amplitud = 0.1; 
+     
+      
+
+
+
+      function luzfocos (){
+    
+        luzfoco01.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco02.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco03.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        luzfoco04.intensity =  (Math.cos(reloj.getElapsedTime() * velocidad)*.5)+.5;
+        
+        materialDeFoco.opacity = ((Math.cos(reloj.getElapsedTime()*velocidad)*.5)+.5);
+        materialDeFoco2.opacity = ((Math.cos(reloj.getElapsedTime()*velocidad)*.5)+.5);
+        
+
+
+
+    }
+      
+  
+    function ondulacion (){
+      
+      toda_la_avioneta.position.y = toda_la_avioneta.position.y + Math.sin(reloj.getElapsedTime() * velocidad)*amplitud;
+
+
+    }
+
+
+
+
+
+        
+
+
+
+// Objeto de posiciones
+var posiciones_originales = {
+  posicion_en_x: 0,
+  posicion_en_y: 0,
+  posicion_en_z: 0,
+  rotacion_en_x: 0, // 👈 Nuevas propiedades para rotar el objeto.
+  rotacion_en_z: 0, // 👈 
+ };
+
+var nuevas_posiciones = {
+  posicion_en_x: 3,
+  posicion_en_y: 2,
+  posicion_en_z: 0,
+  rotacion_en_x : 0,
+  rotacion_en_z: 0
+  
+};
+var nuevas_RRotacion = {
+  
+  rotacion_en_x : 0,
+  rotacion_en_z: 0
+  
+};
+
+
+      // Objeto Tween ✨
+       var tween = new TWEEN.Tween(posiciones_originales);
+       tween.easing(TWEEN.Easing.Quadratic.Out);
+        var tween_rotation = new TWEEN.Tween(posiciones_originales); //👈 Nuevo objeto 'tween'
+
+      function magiatween (){
+        tween.to(nuevas_posiciones, 2000);
+  tween.start();
+  
+
+      }
+
+      function rotarAvioneta(){
+
+        tween.to(nuevas_RRotacion, 2000)
+        tween.start();
+
+      }
+    
+
+      
+
+
+   // 🎮🎮🎮 Interacción  🎮🎮🎮
+  
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowLeft') {
+      tween.to({ posicion_en_z: toda_la_avioneta.position.z - 5 }, 400);
+      tween.start();
+      tween_rotation.to({ rotacion_en_x: Math.PI * (-3 / 16) }, 200); // 👈 Personaliza
+    tween_rotation.repeat(1);
+    tween_rotation.easing(TWEEN.Easing.Cubic.InOut); // 👈 Personaliza
+    tween_rotation.yoyo(true); 
+    tween_rotation.start();
+     
+    
+    }else  if (event.key === 'ArrowRight') {
+      tween.to({ posicion_en_z: toda_la_avioneta.position.z + 5 }, 400);
+      tween.start();
+      
+      tween_rotation.to({ rotacion_en_x: Math.PI * (3 / 16) }, 200); // 👈 Personaliza
+    tween_rotation.repeat(1);
+    tween_rotation.easing(TWEEN.Easing.Cubic.InOut); // 👈 Personaliza
+    tween_rotation.yoyo(true); 
+    tween_rotation.start();
+      
+    } else if (event.key === 'a') {
+      
+    tween_rotation.to({ rotacion_en_x: Math.PI * (4 / 2) }, 200); // 👈 Personaliza
+    tween_rotation.repeat(0);
+    tween_rotation.easing(TWEEN.Easing.Quadratic.InOut); // 👈 Personaliza
+    tween_rotation.yoyo(true); 
+    tween_rotation.start();
+     
+    
+    } else if (event.key === 'Enter') {
+      
+    rotarAvioneta();
+    
+    }
+  });
+
+
+
+  //nubes
+
+  var luna = new THREE.SphereGeometry( 10, 32, 36 );
+  var materialuna = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+  var luna01 = new THREE.Mesh(luna, materialuna);
+  luna01.position.set(100,15,-60);
+
+
+
+  scene.add(luna01);
+
+
+  var nube01 = new THREE.SphereGeometry( 2, 32, 16 );
+  var materialnubes = new THREE.MeshBasicMaterial( { color: 0xB4A3CE} );
+  var nubes01 = new THREE.Mesh(nube01, materialnubes);
+  var nubes02 = new THREE.Mesh(nube01, materialnubes);
+  var nubes03 = new THREE.Mesh(nube01, materialnubes);
+  var nubes04 = new THREE.Mesh(nube01, materialnubes);
+  var nubes05 = new THREE.Mesh(nube01, materialnubes);
+  nubes01.position.set(5,0,9);
+  nubes02.position.set(3,-1,10);
+  nubes03.position.set(3,0,10);
+  nubes04.position.set(3,1,10);
+  nubes05.position.set(1,-0.5,11);
+
+  /// nubes 2
+
+  var nubes201 = new THREE.Mesh(nube01, materialnubes);
+  var nubes202 = new THREE.Mesh(nube01, materialnubes);
+  var nubes203 = new THREE.Mesh(nube01, materialnubes);
+  var nubes204 = new THREE.Mesh(nube01, materialnubes);
+  var nubes205 = new THREE.Mesh(nube01, materialnubes);
+  var nubes206 = new THREE.Mesh(nube01, materialnubes);
+  nubes201.position.set(5,0,9);
+  nubes202.position.set(3,-1,10);
+  nubes203.position.set(3,0,10);
+  nubes204.position.set(3,1,10);
+  nubes205.position.set(1,-0.5,11);
+  nubes206.position.set(-1.2,-1,10);
+
+  var nubes2grup = new THREE.Group();
+      nubes2grup.add(
+        nubes201, nubes202, nubes203, nubes204, nubes205,nubes206
+      );
+
+      nubes2grup.position.set(30,4,-25);
+      nubes2grup.rotation.set(0,0,3.5);
+
+
+  var nubesgrup = new THREE.Group();
+      nubesgrup.add(
+        nubes01, nubes02, nubes03, nubes04, nubes05
+      );
+
+  
+ var nubesclon1 = nubes2grup.clone();
+ var nubesclon2 = nubes2grup.clone();
+ 
+ nubesclon1.position.set(-5,-10,-20);
+ nubesclon2.position.set(-5,-10,-16);
+ nubesclon1.rotation.set(0,20,15);
+ nubesclon2.rotation.set(0,20,15);
+
+
+ var nubesclon3 = nubesgrup.clone();
+nubesclon3.position.set(20,8,0);
+
+  
+
+
+  var grupo_nuves = new THREE.Group();
+      grupo_nuves.add(
+        nubesgrup, nubes2grup, nubesclon1,nubesclon2,nubesclon3
+      );
+
+      var nubesa = grupo_nuves.clone();
+      
+      scene.add(nubesa);
+
+//Grupo de muchas nubes
+let grupo_de_nubes = new THREE.Group();
+
+//Variables del random
+
+      const random_min = -6;
+      const random_max = 6;
+
+//☁☁☁☁ muchas nubes ☁☁☁☁
+
+//Bucle que genera el conjunto de muchas nubes
+
+for ( var iteracion = 0; iteracion < 10; iteracion++ ) {
+
+  //Se repetirá desde 0 hasta 10
+  var nubesa = grupo_nuves.clone(); //clonando el grupo, añadiendo a la variable nube
+
+  
+  //Cambiando la posición de la nube generada
+  nubesa.position.x = iteracion * 20;
+  nubesa.position.y = Math.floor(Math.random() * (random_max - random_min + 1)) + random_min;
+  nubesa.position.z = Math.floor(Math.random() * (random_max - random_min + 1)) + random_min;
+
+  //Añadiendo nueva nube al grupo de nubes
+  grupo_de_nubes.add(nubesa);
+
+}
+grupo_de_nubes.position.y = -10;
+
+scene.add(grupo_de_nubes);
+
+
+///////////////////////Edificios////////////////////////////////////////////
+
+var Edific = new THREE.BoxGeometry( 1, 1, 1 );
+var materialEd = new THREE.MeshLambertMaterial( {color: 0x757170} );
+var edificio = new THREE.Mesh( Edific, materialEd );
+edificio.scale.set(10,90,6);
+edificio.position.set(0,-45,20);
+
+
+var bentanas = new THREE.BoxGeometry( 1, 1, 1 );
+var materialVen = new THREE.MeshLambertMaterial( {color: 0xF7F70D} );
+var ventanas = new THREE.Mesh(bentanas, materialVen );
+ventanas.scale.set(2,1,2);
+ventanas.position.set(1,-4,17.6);
+
+var ventanas1 = new THREE.Mesh(bentanas, materialVen );
+ventanas1.scale.set(2,1,2);
+ventanas1.position.set(-1,-6,17.6);
+
+var ventanas2 = new THREE.Mesh(bentanas, materialVen );
+ventanas2.scale.set(2,1,2);
+ventanas2.position.set(1,-8,17.6);
+
+var ventanas3 = new THREE.Mesh(bentanas, materialVen );
+ventanas3.scale.set(2,1,2);
+ventanas3.position.set(-1,-10,17.6);
+
+var ventanas4 = new THREE.Mesh(bentanas, materialVen );
+ventanas4.scale.set(2,1,2);
+ventanas4.position.set(1,-12,17.6);
+
+var ventanas5 = new THREE.Mesh(bentanas, materialVen );
+ventanas5.scale.set(2,1,2);
+ventanas5.position.set(-1,-14,17.6);
+
+
+
+
+
+
+var grupo_ventanas = new THREE.Group();
+      grupo_ventanas.add(
+        ventanas, ventanas1, ventanas2, ventanas3, ventanas4, ventanas5
+      );
+
+      var ventanasg01 = grupo_ventanas.clone()
+      var ventanasg02 = grupo_ventanas.clone()
+      ventanasg02.position.set(0,-12,0);
+      
+
+      var grupo_EdificioC = new THREE.Group();
+      grupo_EdificioC.add(
+        edificio, ventanasg01, ventanasg02
+      );
+
+      var grupo_EdificioC2 = grupo_EdificioC.clone();
+
+      grupo_EdificioC2.position.set(15,-2,0);
+      grupo_EdificioC2.rotation.set(0,-110,0);
+      
+
+      var grupo_edificios= new THREE.Group();
+      grupo_edificios.add(
+        grupo_EdificioC, grupo_EdificioC2
+      );
+
+      
+
+      var grupo_de_edificios = new THREE.Group();
+
+      for(var i = 0; i < 10; i++){
+
+        
+        var edifg = grupo_edificios.clone();
+
+
+      
+      edifg.position.x = i * 20;
+      edifg.position.y = Math.floor(Math.random() * (random_max - random_min + 1)) + random_min;
+      edifg.position.z = Math.floor(Math.random() * (random_max - random_min + 1)) + random_min;
+
+      
+      grupo_de_edificios.add(edifg);
+
+          }
+        grupo_de_edificios.position.y = -4;
+
+        scene.add(grupo_de_edificios);
+
+
+
+        /*================================ Movimiento de la cámara ==============================*/
+var aceleracion = 0;
+var factor_velocidad_hacia_adelante = 0.2;
+var velocidadAumento = 0;
+
+camera.rotation.set(0, -190, 0);
+
+function seguir_avioneta_camara() {
+  
+  var camarax = camera.position.x = toda_la_avioneta.position.x - 10;
+  
+  var camaraz = camera.position.z = toda_la_avioneta.position.z;
+
+ 
+}
+
+
+function desplazamiento_avioneta() {
+  
+  toda_la_avioneta.position.x += factor_velocidad_hacia_adelante;
+
+  if(toda_la_avioneta.position.x >= 200){
+    
+    factor_velocidad_hacia_adelante += 0.1;
+  toda_la_avioneta.position.x += factor_velocidad_hacia_adelante -200;
+  }
+
+  }
+
+
+  var pasar = document.getElementById('pasar');
+  var salto = document.getElementById('salto');
+  const elemento_distanciaX = document.getElementById('distanciaX'); // busca el elemento con id 'distanciaX' y lo asigna a la variable 'span
+  const elemento_altura = document.getElementById('altura');
+  const aviso_izq = document.getElementById('aviso_izq'); // 👈👈👈
+  const aviso_der = document.getElementById('aviso_der'); // 👈👈👈
+  const aviso_piso = document.getElementById('aviso_piso'); //
+  const vidaso = document.getElementById('vida_al_cien'); 
+  const REINICIAR = document.getElementById('botonReiniciar'); 
+  const cajadevida = document.getElementById('cajavida');   
+  const teclas = document.getElementById('cajaTeclas');   
+  
+
+/*========================================================================*/
+// Límite
+
+var limite_geometry = new THREE.PlaneGeometry(15, 5, 1, 1);
+var limite_material = new THREE.MeshBasicMaterial({
+color: 'red',
+wireframe: false,
+transparent: true,
+opacity: 1,
+side: THREE.DoubleSide,
+});
+var limite_mesh_derecho = new THREE.Mesh(
+limite_geometry,
+limite_material
+);
+limite_mesh_derecho.position.set(0, 0, 19.5);
+limite_mesh_derecho.scale.set(100, 100, 1);
+scene.add(limite_mesh_derecho);
+
+var limite_mesh_izquierdo = new THREE.Mesh(
+limite_geometry,
+limite_material.clone() //👁‍🗨 Ojo, aquí se clona el material para poder modificarlo aparte en la función
+);
+limite_mesh_izquierdo.position.set(0, 0, -19.5);
+limite_mesh_izquierdo.scale.set(100, 100, 1);
+scene.add(limite_mesh_izquierdo);
+
+var limite_mesh_abajo = new THREE.Mesh(
+limite_geometry,
+limite_material.clone() //👁‍🗨 Ojo, aquí se clona el material para poder modificarlo aparte en la función
+);
+limite_mesh_abajo.position.set(0, -50, 0.5);
+limite_mesh_abajo.rotation.set(-190, 0, 0);
+limite_mesh_abajo.scale.set(100, 100, 1);
+scene.add(limite_mesh_abajo);
+
+/*================================ Límites ==============================*/
+// Definición de la función "limite_izquierdo"
+function limite_izquierdo() {
+    // Se comprueba si la posición en el eje z de "toda_la_avioneta" es menor o igual que la posición en el eje z de "limite_mesh_izquierdo"
+    if (toda_la_avioneta.position.z <= limite_mesh_izquierdo.position.z) {
+        limite_mesh_izquierdo.material.color = new THREE.Color(0xff0000); // Si se cumple la condición anterior, se cambia el color del material a rojo
+        limite_mesh_izquierdo.material.opacity = 0.6; // Además, se cambia la opacidad del material a 0.6 (60%)
+        toda_la_avioneta.position.z = +4;
+       aviso_izq.textContent = '¡Regresa al camino!'; // Se establece un mensaje de aviso en el elemento HTML con id "aviso_izq"
+    } else {
+        limite_mesh_izquierdo.material.color = new THREE.Color(0xffffff); // Si no se cumple la condición anterior, se restaura el color original del material a blanco
+        aviso_izq.textContent = null; // Se elimina el mensaje de aviso
+        limite_mesh_izquierdo.material.opacity = 0.0; // Además, se cambia la opacidad del material a 0 (0%)
+    }
+}
+
+// Definición de la función "limite_derecho"
+function limite_derecho() {
+    // Se comprueba si la posición en el eje z de "toda_la_avioneta" es mayor o igual que la posición en el eje z de "limite_mesh_derecho"
+    if (toda_la_avioneta.position.z >= limite_mesh_derecho.position.z) {
+        limite_mesh_derecho.material.color = new THREE.Color(0xff0000); // Si se cumple la condición anterior, se cambia el color del material a rojo
+        limite_mesh_derecho.material.opacity = 0.6; // Además, se cambia la opacidad del material a 0.6 (60%)
+        toda_la_avioneta.position.z = -4;
+        aviso_der.textContent = '¡Regresa al camino!';
+        
+        // Se establece un mensaje de aviso en el elemento HTML con id "aviso_der"
+    } else {
+        limite_mesh_derecho.material.color = new THREE.Color(0xffffff); // Si no se cumple la condición anterior, se restaura el color original del material a blanco
+        aviso_der.textContent = null; // Se elimina el mensaje de aviso
+        limite_mesh_derecho.material.opacity = 0.0; // Además, se cambia la opacidad del material a 0 (0%)
+    }
+}
+
+function limite_abajo() {
+    // Se comprueba si la posición en el eje z de "toda_la_avioneta" es mayor o igual que la posición en el eje z de "limite_mesh_derecho"
+    if (toda_la_avioneta.position.y <= limite_mesh_abajo.position.y) {
+      pas();
+        limite_mesh_abajo.material.color = new THREE.Color(0xff0000); // Si se cumple la condición anterior, se cambia el color del material a rojo
+        limite_mesh_abajo.material.opacity = 0.0; // Además, se cambia la opacidad del material a 0.6 (60%)
+        scene.remove(toda_la_avioneta);
+        camera.position.y = 0;
+        REINICIAR.style.opacity = 1;
+        teclas.style.opacity = 0;
+        cajadevida.style.opacity = 0;
+        elemento_altura.style.opacity = 0;
+        elemento_distanciaX.style.opacity = 0;
+        aviso_piso.textContent = '¡GAME OVER!'; // Se establece un mensaje de aviso en el elemento HTML con id "aviso_der"
+    } else {
+      limite_mesh_abajo.material.color = new THREE.Color(0xffffff); // Si no se cumple la condición anterior, se restaura el color original del material a blanco
+        aviso_der.textContent = null; // Se elimina el mensaje de aviso
+        limite_mesh_abajo.material.opacity = 0.0; // Además, se cambia la opacidad del material a 0 (0%)
+    }
+}
+
+
+/////////////////////////// Creando los circulos de vida//////////////////////
+
+var Circulo_V = new THREE.CircleGeometry( 5, 32 ); 
+var material_V = new THREE.MeshBasicMaterial({color: 0x10EF0B });
+var Cir_Vida = new THREE.Mesh(Circulo_V,  material_V);
+Cir_Vida.position.set(60,0,10);
+Cir_Vida.scale.set(1,1,1);
+Cir_Vida.rotation.set(0,-1.5708,0);
+
+var Cir_Vida2 = new THREE.Mesh(Circulo_V,  material_V);
+Cir_Vida2.position.set(160,0,-10);
+Cir_Vida2.scale.set(1,1,1);
+Cir_Vida2.rotation.set(0,-1.5708,0);
+
+
+scene.add(Cir_Vida, Cir_Vida2);
+
+var collision= 4.5;
+
+function detectarColision(){
+  
+  var distancia = toda_la_avioneta.position.distanceTo(Cir_Vida2.position);
+  
+  
+  return distancia < collision;
+  
+
+}
+function detectarColision2(){
+  
+  var distancia = toda_la_avioneta.position.distanceTo(Cir_Vida.position);
+  
+  
+  return distancia < collision;
+  
+
+}
+
+function updateVida(){
+
+if (detectarColision()){
+  Cir_Vida2.material.color = new THREE.Color(0xff0000);
+  Cir_Vida.material.color = new THREE.Color(0xff0000);
+  let DarGasolina = Math.min(vidaso.offsetWidth + 10, 400);
+  
+  vidaso.style.width = `${DarGasolina}px`;
+
+}else if (detectarColision2()){
+  Cir_Vida2.material.color = new THREE.Color(0xff0000);
+  Cir_Vida.material.color = new THREE.Color(0xff0000);
+  let DarGasolina = Math.min(vidaso.offsetWidth + 10, 400);
+  
+  vidaso.style.width = `${DarGasolina}px`;
+
+}else{
+  Cir_Vida.material.color = new THREE.Color(0x00ff00);
+}
+
+
+}
+////////////// Gravedad para que la Avioneta se baje////////////////////////////////////////
+
+
+var gravedads = 0;
+var levantar = 0.1;
+let gasolinamin = 5;
+
+function gravedad() {
+  var conocerVida = vidaso.offsetWidth;
+  gravedads -= 0.001;
+  toda_la_avioneta.position.y += gravedads;
+  camera.position.y = toda_la_avioneta.position.y += gravedads;
+  let gasolinaquitada = vidaso.offsetWidth - 80;
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowUp') {
+      if (conocerVida > 1) {
+        salt();
+        gravedads = levantar;
+        vidaso.style.width = `${gasolinaquitada}px`;
+        if (vidaso.offsetWidth <= 100) { // si la barra de vida ha llegado a 0 píxeles
+          gravedads = -0.9; // invertir la gravedad para hacer caer la avioneta
+          document.removeEventListener('keydown', arguments.callee); // eliminar el event listener para que la avioneta no se siga moviendo
+        }
+      } else {
+        aviso_der.textContent = '¡Sin gasolina!';
+      }
+    }
+  });
+}
+
+document.addEventListener('keydown', function(event) {
+      if (event.key === 'p') {
+        var cancion = document.getElementById('miCancion');
+        if (cancion.paused) {
+          cancion.volume = 0.25;
+          cancion.play();
+        } else {
+          cancion.pause();
+        }
+      }
+    });
+
+
+    function salt(){
+      
+      salto.play();
+
+    }
+
+    
+    function pas(){
+      
+      pasar.play();
+
+    }
+
+
+
+      //🔥🔥🔥🔥🔥Rendering y animación🔥🔥🔥🔥🔥
+
+      
+      requestAnimationFrame(render);
+      function render() {
+        //💃 Animación
+
+       
+        elemento_distanciaX.textContent = toda_la_avioneta.position.x;
+        elemento_altura.textContent = toda_la_avioneta.position.y;
+
+        helice.rotation.x += 200;
+        
+        
+        luzfocos ();
+       TWEEN.update();
+
+        
+          //toda_la_avioneta.position.y = posiciones_originales.posicion_en_y;
+          //toda_la_avioneta.position.x = posiciones_originales.posicion_en_x;
+          toda_la_avioneta.position.z = posiciones_originales.posicion_en_z;
+
+          //💃 Animación
+        
+        toda_la_avioneta.rotation.z = posiciones_originales.rotacion_en_z; // 👈 
+        toda_la_avioneta.rotation.x = posiciones_originales.rotacion_en_x; // 👈 
+        
+        
+        //ondulacion ();
+        
+        
+        desplazamiento_avioneta();
+        seguir_avioneta_camara();
+        gravedad();
+        
+        limite_izquierdo();
+        limite_derecho();
+        limite_abajo();
+        
+        updateVida();
+
+        //Llamado para renderizar y volver a llamar a la misma función (render)
+        renderer.render(scene, camera);
+        requestAnimationFrame(render);
+       // requestAnimationFrame(ondulacion);
+      }
+    </script>
+  </body>
+</html>

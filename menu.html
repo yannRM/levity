@@ -1,0 +1,46 @@
+<html>
+    <head>
+    <title>MENU</title> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="menuCss.css"> 
+    <link rel="icon" type="image/jpg" href="https://png-1.vector.me/files/images/3/9/398540/aiga_departures_bg_preview"/>  
+    </head>
+    <body>
+        <div id="caja">
+            <div id="logo"> 
+                <p id="menu">MENU</p></div>
+        <div id="tergetas">
+            <div class="targeta" onclick="carrera()">
+                <p>CARRERA</p>
+                
+            </div>
+            <div class="targeta" onclick="guerra()">
+                <p>DISPAROS</p>
+                
+            </div>
+            
+            
+        </div>
+        <div id="atras" onclick="atras()"> 
+            <p id="atrass">ATRAS</p></div>
+        </div>
+
+        <script>
+    
+            function atras() {
+                window.location.href = "index.html";
+            }
+        
+            function guerra() {
+                window.location.href = "guerra.html";
+            }
+        
+            function carrera() {
+                window.location.href = "color.html";
+            }
+        
+            </script>
+    </body>
+</html>
